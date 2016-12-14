@@ -1,0 +1,51 @@
+object FGroups: TFGroups
+  Left = 483
+  Height = 395
+  Top = 212
+  Width = 516
+  Caption = 'Groups'
+  ClientHeight = 395
+  ClientWidth = 516
+  OnActivate = FormActivate
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  LCLVersion = '1.6.0.4'
+  object SaveButton: TButton
+    Left = 416
+    Height = 25
+    Top = 16
+    Width = 75
+    Anchors = [akTop, akRight]
+    Caption = 'Save'
+    Default = True
+    OnClick = SaveButtonClick
+    TabOrder = 0
+  end
+  object CancelButton: TButton
+    Left = 416
+    Height = 25
+    Top = 48
+    Width = 75
+    Anchors = [akTop, akRight]
+    Cancel = True
+    Caption = 'Cancel'
+    OnClick = CancelButtonClick
+    TabOrder = 1
+  end
+  object SG1: TStringGrid
+    Left = 32
+    Height = 364
+    Top = 16
+    Width = 352
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    ColCount = 1
+    DefaultColWidth = 350
+    FixedCols = 0
+    FixedRows = 0
+    Options = [goVertLine, goHorzLine, goRangeSelect, goEditing, goSmoothScroll]
+    RangeSelectMode = rsmMulti
+    RowCount = 15
+    TabOrder = 2
+    OnResize = SG1Resize
+  end
+end

@@ -1,0 +1,267 @@
+object EditForm: TEditForm
+  Left = 437
+  Height = 303
+  Top = 224
+  Width = 619
+  Caption = 'Edit item'
+  ClientHeight = 303
+  ClientWidth = 619
+  OnActivate = FormActivate
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  LCLVersion = '1.6.0.4'
+  object SaveButton: TButton
+    Left = 504
+    Height = 25
+    Top = 24
+    Width = 75
+    Anchors = [akTop, akRight]
+    Caption = 'Save'
+    OnClick = SaveButtonClick
+    TabOrder = 0
+  end
+  object CancelButton: TButton
+    Left = 504
+    Height = 25
+    Top = 56
+    Width = 75
+    Anchors = [akTop, akRight]
+    Caption = 'Cancel'
+    OnClick = CancelButtonClick
+    TabOrder = 1
+  end
+  object DBEdit1: TDBEdit
+    Left = 104
+    Height = 27
+    Top = 16
+    Width = 376
+    DataField = 'Mac'
+    DataSource = MainForm.DataSource1
+    Anchors = [akTop, akLeft, akRight]
+    CharCase = ecNormal
+    MaxLength = 0
+    TabOrder = 2
+  end
+  object Label1: TLabel
+    Left = 32
+    Height = 17
+    Top = 26
+    Width = 24
+    Caption = 'Mac'
+    ParentColor = False
+  end
+  object Label2: TLabel
+    Left = 32
+    Height = 17
+    Top = 58
+    Width = 11
+    Caption = 'IP'
+    ParentColor = False
+  end
+  object Label3: TLabel
+    Left = 32
+    Height = 17
+    Top = 88
+    Width = 58
+    Caption = 'Hostname'
+    ParentColor = False
+  end
+  object Label4: TLabel
+    Left = 32
+    Height = 17
+    Top = 122
+    Width = 16
+    Caption = 'OS'
+    ParentColor = False
+  end
+  object Label5: TLabel
+    Left = 32
+    Height = 17
+    Top = 154
+    Width = 42
+    Caption = 'Version'
+    ParentColor = False
+  end
+  object Label6: TLabel
+    Left = 32
+    Height = 17
+    Top = 187
+    Width = 41
+    Caption = 'Groups'
+    ParentColor = False
+  end
+  object DBEdit2: TDBEdit
+    Left = 104
+    Height = 27
+    Top = 48
+    Width = 376
+    DataField = 'IP'
+    DataSource = MainForm.DataSource1
+    Anchors = [akTop, akLeft, akRight]
+    CharCase = ecNormal
+    MaxLength = 0
+    TabOrder = 3
+  end
+  object DBEdit3: TDBEdit
+    Left = 104
+    Height = 27
+    Top = 78
+    Width = 376
+    DataField = 'Hostname'
+    DataSource = MainForm.DataSource1
+    Anchors = [akTop, akLeft, akRight]
+    CharCase = ecNormal
+    MaxLength = 0
+    TabOrder = 4
+  end
+  object DBEdit4: TDBEdit
+    Left = 104
+    Height = 27
+    Top = 112
+    Width = 216
+    DataField = 'OS'
+    DataSource = MainForm.DataSource1
+    Anchors = [akTop, akLeft, akRight]
+    CharCase = ecNormal
+    MaxLength = 0
+    TabOrder = 5
+  end
+  object DBEdit5: TDBEdit
+    Left = 104
+    Height = 27
+    Top = 144
+    Width = 216
+    DataField = 'Version'
+    DataSource = MainForm.DataSource1
+    Anchors = [akTop, akLeft, akRight]
+    CharCase = ecNormal
+    MaxLength = 0
+    TabOrder = 6
+  end
+  object DBEdit6: TDBEdit
+    Left = 104
+    Height = 27
+    Top = 177
+    Width = 376
+    DataField = 'Groups'
+    DataSource = MainForm.DataSource1
+    Anchors = [akTop, akLeft, akRight]
+    CharCase = ecNormal
+    MaxLength = 0
+    TabOrder = 7
+  end
+  object DBCheckBox1: TDBCheckBox
+    Left = 32
+    Height = 23
+    Top = 216
+    Width = 58
+    BiDiMode = bdRightToLeft
+    Caption = 'SSH'
+    DataField = 'SSH'
+    DataSource = MainForm.DataSource1
+    ParentBiDiMode = False
+    TabOrder = 8
+    ValueChecked = 'True'
+    ValueUnchecked = 'False'
+  end
+  object DBCheckBox2: TDBCheckBox
+    Left = 408
+    Height = 23
+    Top = 216
+    Width = 72
+    BiDiMode = bdRightToLeft
+    Caption = 'Nagios'
+    DataField = 'Nagios'
+    DataSource = MainForm.DataSource1
+    ParentBiDiMode = False
+    TabOrder = 9
+    ValueChecked = 'True'
+    ValueUnchecked = 'False'
+  end
+  object DBCheckBox3: TDBCheckBox
+    Left = 96
+    Height = 23
+    Top = 216
+    Width = 58
+    BiDiMode = bdRightToLeft
+    Caption = 'FTP'
+    DataField = 'SSH'
+    DataSource = MainForm.DataSource1
+    ParentBiDiMode = False
+    TabOrder = 10
+    ValueChecked = 'True'
+    ValueUnchecked = 'False'
+  end
+  object DBCheckBox4: TDBCheckBox
+    Left = 184
+    Height = 23
+    Top = 216
+    Width = 58
+    BiDiMode = bdRightToLeft
+    Caption = 'HTTP'
+    DataField = 'HTTP'
+    DataSource = MainForm.DataSource1
+    ParentBiDiMode = False
+    TabOrder = 11
+    ValueChecked = 'True'
+    ValueUnchecked = 'False'
+  end
+  object DBCheckBox5: TDBCheckBox
+    Left = 264
+    Height = 23
+    Top = 216
+    Width = 66
+    BiDiMode = bdRightToLeft
+    Caption = 'HTTPS'
+    DataField = 'SSH'
+    DataSource = MainForm.DataSource1
+    ParentBiDiMode = False
+    TabOrder = 12
+    ValueChecked = 'True'
+    ValueUnchecked = 'False'
+  end
+  object DBCheckBox6: TDBCheckBox
+    Left = 336
+    Height = 23
+    Top = 216
+    Width = 58
+    BiDiMode = bdRightToLeft
+    Caption = 'SNMP'
+    DataField = 'SNMP'
+    DataSource = MainForm.DataSource1
+    ParentBiDiMode = False
+    TabOrder = 13
+    ValueChecked = 'True'
+    ValueUnchecked = 'False'
+  end
+  object CB1: TComboBox
+    Left = 328
+    Height = 29
+    Top = 112
+    Width = 176
+    Anchors = [akTop, akRight]
+    ItemHeight = 0
+    OnChange = CB1Change
+    TabOrder = 14
+    Text = 'CB1'
+  end
+  object CB2: TComboBox
+    Left = 328
+    Height = 29
+    Top = 144
+    Width = 176
+    Anchors = [akTop, akRight]
+    ItemHeight = 0
+    OnChange = CB2Change
+    TabOrder = 15
+    Text = 'CB2'
+  end
+  object Button1: TButton
+    Left = 488
+    Height = 25
+    Top = 179
+    Width = 75
+    Action = MainForm.AgroupEdit
+    TabOrder = 16
+  end
+end

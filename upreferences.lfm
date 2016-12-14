@@ -1,0 +1,111 @@
+object FPref: TFPref
+  Left = 351
+  Height = 563
+  Top = 163
+  Width = 861
+  Caption = 'Preferences'
+  ClientHeight = 563
+  ClientWidth = 861
+  OnActivate = FormActivate
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  LCLVersion = '1.6.0.4'
+  object Button1: TButton
+    Left = 752
+    Height = 25
+    Top = 32
+    Width = 75
+    Anchors = [akTop, akRight]
+    Caption = 'Save'
+    OnClick = Button1Click
+    TabOrder = 0
+  end
+  object Button2: TButton
+    Left = 752
+    Height = 25
+    Top = 64
+    Width = 75
+    Anchors = [akTop, akRight]
+    Caption = 'Close'
+    OnClick = Button2Click
+    TabOrder = 1
+  end
+  object CB1: TComboBox
+    Left = 223
+    Height = 29
+    Top = 64
+    Width = 232
+    ItemHeight = 0
+    TabOrder = 2
+    Text = 'CB1'
+  end
+  object Label1: TLabel
+    Left = 40
+    Height = 17
+    Top = 72
+    Width = 157
+    Caption = 'Interface to use for the scan'
+    ParentColor = False
+  end
+  object Label2: TLabel
+    Left = 40
+    Height = 17
+    Top = 40
+    Width = 141
+    Caption = 'Comand to get interfaces'
+    ParentColor = False
+  end
+  object EIfCmd: TEdit
+    Left = 224
+    Height = 27
+    Top = 32
+    Width = 512
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 3
+    Text = 'ifconfig -a | grep Link | grep -v inet6| awk '' { print $1 }  '''
+  end
+  object Label3: TLabel
+    Left = 40
+    Height = 17
+    Top = 106
+    Width = 101
+    Caption = 'Command to scan'
+    ParentColor = False
+  end
+  object EScanCmd: TEdit
+    Left = 224
+    Height = 27
+    Top = 96
+    Width = 512
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 4
+    Text = 'arp-scan -I <Interface> -l -q | tail  -n +3 | head -n -3'
+  end
+  object ENmap: TEdit
+    Left = 224
+    Height = 27
+    Top = 128
+    Width = 512
+    Anchors = [akTop, akLeft, akRight]
+    TabOrder = 5
+    Text = 'nmap -iL <FileName1> -p 80,20,22,443,161 -oX <FileName2>'
+  end
+  object Label4: TLabel
+    Left = 40
+    Height = 17
+    Top = 138
+    Width = 91
+    Caption = 'nmap command'
+    ParentColor = False
+  end
+  object LoadLast: TCheckBox
+    Left = 40
+    Height = 22
+    Top = 168
+    Width = 180
+    BidiMode = bdRightToLeft
+    Caption = 'Load last save file at startup'
+    ParentBidiMode = False
+    TabOrder = 6
+  end
+end
