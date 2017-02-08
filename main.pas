@@ -1,3 +1,13 @@
+// Copyright 2017, Kaj Mikkelsen
+// This software is distributed under the GPL 3 license
+// The full text of the license can be found in the aboutbox
+// as well as in the file "Copying"
+
+// Version History
+// 0.01 Initial release
+// 0.02 Error in Regular Expression happened for all records.
+//      Changed so filter is discarded on RegEx error
+
 unit Main;
 
 {$mode objfpc}{$H+}
@@ -6,11 +16,11 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, Menus,
-  ActnList, StdCtrls, DBGrids,  ExtCtrls, upreferences, mylib,
-  BufDataset, db,
-netdb,laz2_DOM
-  ,laz2_XMLRead
-  ,laz2_XMLUtils;
+  ActnList, StdCtrls, DBGrids, ExtCtrls, Buttons, upreferences, mylib,
+  BufDataset, DB,
+  netdb, laz2_DOM
+  , laz2_XMLRead
+  , laz2_XMLUtils;
 
 type
 
@@ -19,6 +29,7 @@ type
   TMainForm = class(TForm)
     AClear: TAction;
     AAbout: TAction;
+    AWriteAll: TAction;
     AWriteFile_ports: TAction;
     AGetHostNames: TAction;
     AgroupEdit: TAction;
@@ -29,10 +40,17 @@ type
     ASave: TAction;
     AOpen: TAction;
     BufDataset1: TBufDataset;
+    Button1: TButton;
+    Button2: TButton;
+    CB1: TComboBox;
     DataSource1: TDataSource;
     DBGrid1: TDBGrid;
+    Edit1: TEdit;
+    GroupBox1: TGroupBox;
     Label1: TLabel;
     Label2: TLabel;
+    Label3: TLabel;
+    Label4: TLabel;
     Memo1: TMemo;
     MenuItem10: TMenuItem;
     MenuItem2: TMenuItem;
@@ -52,8 +70,9 @@ type
     Panel1: TPanel;
     Panel2: TPanel;
     Panel3: TPanel;
-    Panel4: TPanel;
     Panel5: TPanel;
+    Panel6: TPanel;
+    Panel7: TPanel;
     SD1: TSaveDialog;
     Scan: TAction;
     APreferences: TAction;
@@ -68,6 +87,7 @@ type
     MFiles: TMenuItem;
     MEdit: TMenuItem;
     MExit: TMenuItem;
+    SD2: TSaveDialog;
     procedure AAboutExecute(Sender: TObject);
     procedure AClearExecute(Sender: TObject);
     procedure AGetHostNamesExecute(Sender: TObject);
@@ -79,20 +99,27 @@ type
     procedure AOpenExecute(Sender: TObject);
     procedure APreferencesExecute(Sender: TObject);
     procedure AVersionsExecute(Sender: TObject);
+    procedure AWriteAllExecute(Sender: TObject);
     procedure AWriteFile_portsExecute(Sender: TObject);
+    procedure BufDataset1FilterRecord(DataSet: TDataSet; var Accept: boolean);
+    procedure Button1Click(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
     procedure DataSource1DataChange(Sender: TObject; Field: TField);
     procedure DBGrid1ColumnSized(Sender: TObject);
     procedure DBGrid1DblClick(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure MenuItem10Click(Sender: TObject);
+    procedure MExitClick(Sender: TObject);
     procedure QuitExecute(Sender: TObject);
     procedure ScanExecute(Sender: TObject);
   private
     { private declarations }
-    Procedure DoTheXML(FlNm: String);
-    Procedure LoadDataBase(FlNm:String);
-    Procedure EmptyDatabase;
+    procedure DoTheXML(FlNm: string);
+    procedure LoadDataBase(FlNm: string);
+    procedure EmptyDatabase;
+    procedure ShowMyMessage(Message: string);
   public
     { public declarations }
   end;
@@ -101,54 +128,57 @@ var
   MainForm: TMainForm;
 
 implementation
-{$R *.lfm}
-Uses
-  UEdit,UAbout,UGroups,UGroupEdit,UWrite_Port,sockets;
 
-Var
-  DataBaseChanged: Boolean;
+{$R *.lfm}
+uses
+  UEdit, UAbout, UGroups, UGroupEdit, UWrite_Port, sockets, UMyShowMessage, RegExpr;
+
+var
+  DataBaseChanged: boolean;
 { TMainForm }
 
 procedure TMainForm.ScanExecute(Sender: TObject);
-Var
+var
   Str: TStringList;
 
-  Cmd,Interf,St: String;
-  i: Integer;
+  Cmd, Interf, St: string;
+  i: integer;
   SavedCursor: TCursor;
 begin
   SavedCursor := Cursor;
   Cursor := crHourGlass;
-  Interf := GetStdIni('Settings','IFcmd','eth0');
-  Cmd := GetSTdIni('Commands','ScanCmd','arp-scan -I <Interface> -l -q | tail  -n +3 | head -n -3');
+  Panel6.Caption := 'Scanning';
+  Interf := GetStdIni('Settings', 'IFcmd', 'eth0');
+  Cmd := GetStdIni('Commands', 'ScanCmd',
+    'arp-scan -I <Interface> -l -q | tail  -n +3 | head -n -3');
 
   //  Cmd := 'arp-scan -I'+Interf+' -l -q | tail  -n +3 | head -n -3';
-  Cmd := StringReplace(Cmd,'<Interface>',Interf,[]);
-  ShowMessage('This may take a while');
+  Cmd := StringReplace(Cmd, '<Interface>', Interf, []);
+  ShowMyMessage('This may take a while');
   Application.ProcessMessages;
   Str := TStringList.Create;
-//  DoCommand('/bin/bash -c "sudo ls -l"',Str);
-
-  If DoCommand('/bin/bash -c "'+Cmd+'"',Str) = 0 Then
-  Begin
+  //  DoCommand('/bin/bash -c "sudo ls -l"',Str);
+  if DoCommand('/bin/bash -c "' + Cmd + '"', Str) = 0 then
+  begin
     Memo1.Lines.Clear;
     Memo1.Lines.Add('New:');
-    With BufDataSet1 Do
-    Begin
+    with BufDataSet1 do
+    begin
 
-      If Not BufDataSet1.Active Then
+      if not BufDataSet1.Active then
         CreateDataSet;
-      If Str.Count < 4 Then
+      if Str.Count < 4 then
         ShowMessage('To few devices')
-      Else
-      Begin
-        For i := 0 To Str.Count - 1 Do
-        Begin
-          St := UniformMac(GetFieldByDelimiter(1,Str[i],#9),':');
-          If Not BufDataset1.Locate('Mac',St,[]) Then
-          Begin
+      else
+      begin
+        for i := 0 to Str.Count - 1 do
+        begin
+          St := UniformMac(GetFieldByDelimiter(1, Str[i], #9), ':');
+          if not BufDataset1.Locate('Mac', St, []) then
+          begin
             Append;
-            FieldByName('Mac').AsString := UniformMac(GetFieldByDelimiter(1,Str[i],#9),':');
+            FieldByName('Mac').AsString :=
+              UniformMac(GetFieldByDelimiter(1, Str[i], #9), ':');
             FieldByName('Hostname').AsString := '';
             FieldByName('OS').AsString := '';
             FieldByName('Groups').AsString := '';
@@ -160,9 +190,9 @@ begin
             FieldByName('Nagios').AsBoolean := False;
             Memo1.Lines.Add(St);
           end
-          Else
+          else
             Edit;
-          FieldByName('IP').AsString := GetFieldByDelimiter(0,Str[i],#9);
+          FieldByName('IP').AsString := GetFieldByDelimiter(0, Str[i], #9);
           post;
           Application.ProcessMessages;
         end;
@@ -170,23 +200,25 @@ begin
     end;
 
   end
-  Else
-  Begin
+  else
+  begin
     Memo1.Clear;
-    Memo1.Lines.Add('Error in executing command '+cmd);
+    Memo1.Lines.Add('Error in executing command ' + cmd);
   end;
   Str.Free;
+  Panel6.Caption := '';
   Cursor := SavedCursor;
 end;
 
 procedure TMainForm.QuitExecute(Sender: TObject);
 begin
-  If DataBaseChanged Then
-  Begin
-    If MessageDlg('Warning','Database not saved, do you really want to exit',mtConfirmation,[mbYes,mbNo] ,0) = mrYes Then
+  if DataBaseChanged then
+  begin
+    if MessageDlg('Warning', 'Database not saved, do you really want to exit',
+      mtConfirmation, [mbYes, mbNo], 0) = mrYes then
       Application.terminate;
   end
-  Else
+  else
     Application.Terminate;
 end;
 
@@ -201,62 +233,132 @@ begin
   FGroups.ShowModal;
 end;
 
+procedure TMainForm.AWriteAllExecute(Sender: TObject);
+var
+  Fl: TextFile;
+begin
+  SD2.InitialDir := GetStdIni('Settings', 'WriteSaveDir', '~/.Inventory');
+  SD2.FileName := GetStdIni('Settings', 'WriteSaveFile', '');
+  if SD2.Execute then
+  begin
+    PutStdIni('Settings', 'WriteSaveDir', SD2.InitialDir);
+    PutStdIni('Settings', 'WriteSaveFile', SD2.FileName);
+    try
+      AssignFile(fl, SD2.FileName);
+      Rewrite(Fl);
+    except
+      ShowMessage('Could not write to file' + SD2.FileName);
+      Exit;
+    end;
+    with BufDataset1 do
+    begin
+      First;
+      while not EOF do
+      begin
+        if FieldByName('Hostname').AsString <> '' then
+          WriteLn(fl, FieldByName('Hostname').AsString);
+        Next;
+      end;
+    end;
+    CloseFile(Fl);
+  end;
+end;
+
 procedure TMainForm.AWriteFile_portsExecute(Sender: TObject);
 begin
   FWrite_Port.ShowModal;
 end;
 
+procedure TMainForm.BufDataset1FilterRecord(DataSet: TDataSet; var Accept: boolean);
+var
+  RegEx: TRegExpr;
+  St: string;
+begin
+  RegEx := TRegExpr.Create;
+  try
+    try
+      RegEx.Expression := Edit1.Text;
+      St := BufDataSet1.FieldByName(CB1.Text).AsString;
+      if RegEx.Exec(St) then
+        Accept := True
+      else
+        Accept := False;
+    except
+      ShowMessage('Error in Regular Expression, filter discarded ');
+      BufDataSet1.Filtered:=false;
+    end;
+  finally
+    RegEx.Free;
+  end;
+end;
+
+procedure TMainForm.Button1Click(Sender: TObject);
+begin
+  BufDataSet1.Filtered := False;
+  BufDataSet1.Filtered := True;
+end;
+
+procedure TMainForm.Button2Click(Sender: TObject);
+begin
+  BufDataSet1.Filtered := False;
+  Edit1.Text := '';
+end;
+
 procedure TMainForm.AOpenExecute(Sender: TObject);
-Var
-  Fl:TextFile;
+var
+  Fl: TextFile;
 begin
 
-  OD1.InitialDir:=GetStdIni('Settings','SaveDir','~/.Inventory');
-  OD1.FileName:=GetStdIni('Settings','SaveFile','Inventory.csv');
-  If OD1.Execute Then
+  OD1.InitialDir := GetStdIni('Settings', 'SaveDir', '~/.Inventory');
+  OD1.FileName := GetStdIni('Settings', 'SaveFile', 'Inventory.csv');
+  if OD1.Execute then
   begin
-    PutStdIni('Settings','SaveDir',OD1.InitialDir);
-    PutStdIni('Settings','SaveFile',OD1.FileName);
+    PutStdIni('Settings', 'SaveDir', OD1.InitialDir);
+    PutStdIni('Settings', 'SaveFile', OD1.FileName);
     LoadDataBase(OD1.FileName);
   end;
 end;
 
 procedure TMainForm.ASaveExecute(Sender: TObject);
-Var
+var
   Fl: TextFile;
 begin
-  Sd1.InitialDir:=GetStdIni('Settings','SaveDir','~/.Inventory');
-  SD1.FileName:=GetStdIni('Settings','SaveFile','Inventory.csv');
-  If SD1.Execute Then
+  if BufDataSet1.Filtered then
   begin
-    PutStdIni('Settings','SaveDir',SD1.InitialDir);
-    PutStdIni('Settings','SaveFile',SD1.FileName);
-    AssignFile(Fl,SD1.FileName);
+    if MessageDlg('Clear filter before saving', mtConfirmation, [mbYes, mbNo], 0) =
+      mrYes then
+    begin
+      BufDataSet1.Filtered := False;
+      Edit1.Text := '';
+    end;
+  end;
+  Sd1.InitialDir := GetStdIni('Settings', 'SaveDir', '~/.Inventory');
+  SD1.FileName := GetStdIni('Settings', 'SaveFile', 'Inventory.csv');
+  if SD1.Execute then
+  begin
+    PutStdIni('Settings', 'SaveDir', SD1.InitialDir);
+    PutStdIni('Settings', 'SaveFile', SD1.FileName);
+    AssignFile(Fl, SD1.FileName);
     ReWrite(fl);
-    With  BufDataSet1 Do
-    Begin
+    with  BufDataSet1 do
+    begin
       First;
-      While Not EOF DO
+      while not EOF do
       begin
         WriteLn(Fl,
-        FieldByName('Mac').AsString+';'+
-        FieldByName('IP').AsString+';'+
-        FieldByName('Hostname').AsString+';'+
-        FieldByName('OS').AsString+';'+
-        FieldByName('Groups').AsString+';'+
-        FieldByName('SSH').AsString+';'+
-        FieldByName('HTTP').AsString+';'+
-        FieldByName('HTTPS').AsString+';'+
-        FieldByName('FTP').AsString+';'+
-        FieldByName('SNMP').AsString+';'+
-        FieldByName('Nagios').AsString);
+          FieldByName('Mac').AsString + ';' + FieldByName('IP').AsString +
+          ';' + FieldByName('Hostname').AsString + ';' +
+          FieldByName('OS').AsString + ';' + FieldByName('Groups').AsString +
+          ';' + FieldByName('SSH').AsString + ';' + FieldByName('HTTP').AsString +
+          ';' + FieldByName('HTTPS').AsString + ';' + FieldByName('FTP').AsString +
+          ';' + FieldByName('SNMP').AsString + ';' + FieldByName('Nagios').AsString);
         Next;
       end;
     end;
     CloseFile(Fl);
-    DataBaseChanged:= False;
+    DataBaseChanged := False;
     Memo1.Lines.Clear;
-    Panel1.Caption:= 'Database unchanged';
+    Panel1.Caption := 'Database unchanged';
   end;
 end;
 
@@ -267,50 +369,52 @@ begin
 end;
 
 procedure TMainForm.AGetOpenPortsExecute(Sender: TObject);
-Var
-  St,St1,Cmd:string;
-  Str1:TStringList;
-  Fl:TextFile;
+var
+  St, St1, Cmd: string;
+  Str1: TStringList;
+  Fl: TextFile;
   SavedCursor: TCursor;
 begin
   SavedCursor := Cursor;
   Cursor := crHourGlass;
-
-  St := '/tmp/'+IntToStr(GetProcessId)+'_files.txt';
-  St1 := '/tmp/'+IntToStr(GetProcessId)+'_out.txt';
-  AssignFile(fl,St);
+  Panel6.Caption := 'Scanning';
+  St := '/tmp/' + IntToStr(GetProcessId) + '_files.txt';
+  St1 := '/tmp/' + IntToStr(GetProcessId) + '_out.txt';
+  AssignFile(fl, St);
   Rewrite(fl);
-  With BufDataSet1 Do
+  with BufDataSet1 do
   begin
     First;
-    While Not Eof Do
-    Begin
-      WriteLn(Fl,FieldByName('IP').AsString);
+    while not EOF do
+    begin
+      WriteLn(Fl, FieldByName('IP').AsString);
       Next;
-      Application.Processmessages;
-     End;
+      Application.ProcessMessages;
+    end;
   end;
   CloseFile(Fl);
-  Cmd := GetSTdIni('Commands','NmapCmd','nmap -iL <FileName1> -p 80,20,22,443,161 -oX <FileName2>');
-  Cmd := StringReplace(Cmd,'<FileName1>',St,[]);
-  Cmd := StringReplace(Cmd,'<FileName2>',St1,[]);
-  ShowMessage('This may take a while');
+  Cmd := GetSTdIni('Commands', 'NmapCmd',
+    'nmap -iL <FileName1> -p 80,20,22,443,161 -oX <FileName2>');
+  Cmd := StringReplace(Cmd, '<FileName1>', St, []);
+  Cmd := StringReplace(Cmd, '<FileName2>', St1, []);
+  ShowMyMessage('This may take a while');
   Application.ProcessMessages;
   Str1 := TStringList.Create;
-  If (DoCommand('/bin/bash -c "'+Cmd+'"',Str1) = 0) Then
+  if (DoCommand('/bin/bash -c "' + Cmd + '"', Str1) = 0) then
     DoTheXML(St1)
-  Else
-    ShowMessage('Could not execute '+Cmd);
+  else
+    ShowMessage('Could not execute ' + Cmd);
   Str1.Free;
-//  DeleteFile(st);
-   Cursor := SavedCursor;
-
+  DeleteFile(St);
+  DeleteFile(st1);
+  Cursor := SavedCursor;
+  Panel6.Caption := '';
 end;
 
 procedure TMainForm.AgroupEditExecute(Sender: TObject);
 begin
   FGroupEdit.Groups := BufDataSet1.FieldByName('Groups').AsString;
-  If FGroupEdit.ShowModal = mrOk Then
+  if FGroupEdit.ShowModal = mrOk then
   begin
     BufDataSet1.FieldByName('Groups').AsString := FGroupEdit.Groups;
   end;
@@ -327,27 +431,29 @@ begin
 end;
 
 procedure TMainForm.AGetHostNamesExecute(Sender: TObject);
-Var
-  H : THostEntry;
+var
+  H: THostEntry;
   SavedCursor: TCursor;
 begin
   SavedCursor := Cursor;
   Cursor := crHourGlass;
-  With BufDataSet1 Do
-  Begin
+  Panel6.Caption := 'Scanning';
+  with BufDataSet1 do
+  begin
     First;
-    While Not EoF Do
-    Begin
-      If ResolveHostByAddr(StrToHostAddr(FieldByName('IP').AsString),H) then
-      Begin
-        Application.ProcessMessages;
+    while not EOF do
+    begin
+      if ResolveHostByAddr(StrToHostAddr(FieldByName('IP').AsString), H) then
+      begin
         Edit;
         FieldByName('Hostname').AsString := H.Name;
         Post;
-      End;
+      end;
+      Application.ProcessMessages;
       Next;
     end;
-  End;
+  end;
+  Panel6.Caption := '';
   Cursor := SavedCursor;
 end;
 
@@ -359,24 +465,24 @@ end;
 
 procedure TMainForm.DataSource1DataChange(Sender: TObject; Field: TField);
 begin
-  DataBaseChanged:= True;
+  DataBaseChanged := True;
   Panel1.Caption := 'Database modified';
-  Panel2.Caption := 'Items: '+IntToStr(BufDataSet1.RecordCount);
+  Panel2.Caption := 'Items: ' + IntToStr(BufDataSet1.RecordCount);
 end;
 
 procedure TMainForm.DBGrid1ColumnSized(Sender: TObject);
-Var
-    i: Integer;
-    St: String;
+var
+  i: integer;
+  St: string;
 begin
-  For i := 0 to DBGrid1.Columns.Count-1 do
-  Begin
-    If i < 10 Then
-      St := 'Col0'+IntToStr(i)
-    Else
-      St := 'Col'+IntToStr(i);
-    PutStdIni('Datagrid',st,IntToStr(DBGrid1.Columns[i].Width));
-  End;
+  for i := 0 to DBGrid1.Columns.Count - 1 do
+  begin
+    if i < 10 then
+      St := 'Col0' + IntToStr(i)
+    else
+      St := 'Col' + IntToStr(i);
+    PutStdIni('Datagrid', st, IntToStr(DBGrid1.Columns[i].Width));
+  end;
 end;
 
 procedure TMainForm.DBGrid1DblClick(Sender: TObject);
@@ -386,56 +492,63 @@ end;
 
 procedure TMainForm.FormCloseQuery(Sender: TObject; var CanClose: boolean);
 begin
-  If DataBaseChanged Then
-  If MessageDlg('Warning','Database not saved, do you really want to exit',mtConfirmation,[mbYes,mbNo] ,0) = mrNo Then
-    CanClose := False
-  else
-    CanClose := True;
+  if DataBaseChanged then
+    if MessageDlg('Warning', 'Database not saved, do you really want to exit',
+      mtConfirmation, [mbYes, mbNo], 0) = mrNo then
+      CanClose := False
+    else
+      CanClose := True;
 end;
 
 
 procedure TMainForm.FormCreate(Sender: TObject);
-Var
-  i:Integer;
-  Flnm,St:String;
-  Str:TStringList;
+var
+  i: integer;
+  Flnm, St: string;
+  Str: TStringList;
 begin
-  HomeDir := GetUserDir+'/.inventory/';
-  If Not DirectoryExists(HomeDir) Then
-  Begin
+  HomeDir := GetUserDir + '/.inventory/';
+  if not DirectoryExists(HomeDir) then
+  begin
     CreateDir(HomeDir);
   end;
   RestoreForm(MainForm);
   BufDataSet1.CreateDataset;
-  For i := 0 to DBGrid1.Columns.Count-1 do
-  Begin
-    If i < 10 Then
-      St := 'Col0'+IntToStr(i)
-    Else
-      St := 'Col'+IntToStr(i);
-    DBGrid1.Columns[i].Width:= StrToInt(GetStdIni('Datagrid',st,IntToStr(DBGrid1.Columns[i].Width)));
-  End;
-  Panel5.Caption := 'Interface: '+GetStdIni('Settings','IFcmd','eth0');
-  If GetEnvironmentVariable('USER') <> 'root' Then
+  for i := 0 to DBGrid1.Columns.Count - 1 do
+  begin
+    if i < 10 then
+      St := 'Col0' + IntToStr(i)
+    else
+      St := 'Col' + IntToStr(i);
+    DBGrid1.Columns[i].Width :=
+      StrToInt(GetStdIni('Datagrid', st, IntToStr(DBGrid1.Columns[i].Width)));
+  end;
+  Panel5.Caption := 'Interface: ' + GetStdIni('Settings', 'IFcmd', 'eth0');
+  if GetEnvironmentVariable('USER') <> 'root' then
     ShowMessage('To run the scan options, this program needs to be run as root');
   Str := TStringList.Create;
-  If DoCommand('/bin/bash -c "which arp-scan"',Str) <> 0 Then
-  Begin
+  if DoCommand('/bin/bash -c "which arp-scan"', Str) <> 0 then
+  begin
     ShowMessage('Cannot find the arp-scan application. If not installed, you cannot do any scanning.');
     Scan.Enabled := False;
   end;
-  If DoCommand('/bin/bash -c "which nmap"',Str) <> 0 Then
-  Begin
+  if DoCommand('/bin/bash -c "which nmap"', Str) <> 0 then
+  begin
     ShowMessage('Cannot find the nmap application. If not installed, you cannot do any scanning for names and open ports');
     AGetOpenPorts.Enabled := False;
   end;
   Str.Free;
-  If GetSTdIni('Settings','LoadLast','True') = 'True' Then
-    Flnm := GetStdIni('Settings','SaveFile','');
-  If Flnm <> '' Then
-   LoadDataBase(Flnm);
-  DataBaseChanged:= False;
-
+  if GetSTdIni('Settings', 'LoadLast', 'True') = 'True' then
+    Flnm := GetStdIni('Settings', 'SaveFile', '');
+  if Flnm <> '' then
+    LoadDataBase(Flnm);
+  DataBaseChanged := False;
+  Panel6.Caption := '';
+  CB1.Items.Clear;
+  for i := 0 to BufDataSet1.FieldCount - 1 do
+    CB1.Items.Add(BufDataSet1.Fields[i].FieldName);
+  CB1.ItemIndex := 0;
+  ;
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
@@ -443,128 +556,139 @@ begin
   SaveForm(MainForm);
 end;
 
-Procedure TMainForm.DoTheXML(FlNm: String);
-Var
-  Doc: TXMLDocument;
-  Node,node1,node2,node3: TDomNode;
-  mac,port,portstatus,hostname:String;
-  Count:Integer;
+procedure TMainForm.MenuItem10Click(Sender: TObject);
 begin
-  Memo1.Lines.Add('Nmap xml file: '+FlNm);
+  AL1.ActionByName('AAbout');
+end;
+
+procedure TMainForm.MExitClick(Sender: TObject);
+begin
+  AL1.ActionByName('Quit');
+end;
+
+procedure TMainForm.DoTheXML(FlNm: string);
+var
+  Doc: TXMLDocument;
+  Node, node1, node2, node3: TDomNode;
+  mac, port, portstatus, hostname: string;
+  Count: integer;
+begin
+  Memo1.Lines.Add('Nmap xml file: ' + FlNm);
   Count := 0;
   try
     ReadXMLFile(Doc, FlNm);
     Node := Doc.DocumentElement.FindNode('host');
-    While Node <> nil Do
-    Begin
+    while Node <> nil do
+    begin
       Hostname := '';
       Inc(Count);
       Node1 := Node.FirstChild;
-      while Node1 <> Nil do
+      while Node1 <> nil do
       begin
-        If Node1.Nodename = 'hostnames' Then
-        Begin
-          Node2 := Node1.FirstChild;
-          If Node2 <> Nil Then
-          if Node2.HasAttributes then
-            hostname := node2.Attributes.GetNamedItem('name').NodeValue
-          Else
-            hostname := '';
-        end;
-        If Node1.Nodename = 'address' Then
-        Begin
-          if Node1.HasAttributes then
-            begin
-              if node1.Attributes.GetNamedItem('addrtype').NodeValue = 'mac' then
-                Begin
-                  mac := uniformmac(node1.Attributes.GetNamedItem('addr').NodeValue,':');
-                  If BufDataSet1.Locate('Mac',Mac,[]) Then
-                  begin
-                    BufDataSet1.Edit;
-                  end;
-                end;
-            end;
-        end;
-        If Node1.NodeName = 'ports' Then
+        if Node1.Nodename = 'hostnames' then
         begin
           Node2 := Node1.FirstChild;
-          While Node2 <> nil Do
+          if Node2 <> nil then
+            if Node2.HasAttributes then
+              hostname := node2.Attributes.GetNamedItem('name').NodeValue
+            else
+              hostname := '';
+        end;
+        if Node1.Nodename = 'address' then
+        begin
+          if Node1.HasAttributes then
           begin
-            If node2.NodeName = 'port' Then
+            if node1.Attributes.GetNamedItem('addrtype').NodeValue = 'mac' then
+            begin
+              mac := uniformmac(node1.Attributes.GetNamedItem('addr').NodeValue, ':');
+              if BufDataSet1.Locate('Mac', Mac, []) then
+              begin
+                BufDataSet1.Edit;
+              end;
+            end;
+          end;
+        end;
+        if Node1.NodeName = 'ports' then
+        begin
+          Node2 := Node1.FirstChild;
+          while Node2 <> nil do
+          begin
+            if node2.NodeName = 'port' then
               Port := node2.Attributes.GetNamedItem('portid').NodeValue;
             Node3 := Node2.FirstChild;
-            If node3.NodeName = 'state' Then
+            if node3.NodeName = 'state' then
               PortStatus := node3.Attributes.GetNamedItem('state').NodeValue;
-              If port = '20' Then
-                BufDataSet1.FieldByName('FTP').AsBoolean := (PortStatus = 'open');
-              If port = '22' Then
-                BufDataSet1.FieldByName('SSH').AsBoolean := (PortStatus = 'open');
-              If port = '80' Then
-                BufDataSet1.FieldByName('HTTP').AsBoolean := (PortStatus = 'open');
-              If port = '161' Then
-                BufDataSet1.FieldByName('SNMP').AsBoolean := (PortStatus = 'open');
-              If port = '443' Then
-                BufDataSet1.FieldByName('HTTPS').AsBoolean := (PortStatus = 'open');
+            if port = '20' then
+              BufDataSet1.FieldByName('FTP').AsBoolean := (PortStatus = 'open');
+            if port = '22' then
+              BufDataSet1.FieldByName('SSH').AsBoolean := (PortStatus = 'open');
+            if port = '80' then
+              BufDataSet1.FieldByName('HTTP').AsBoolean := (PortStatus = 'open');
+            if port = '161' then
+              BufDataSet1.FieldByName('SNMP').AsBoolean := (PortStatus = 'open');
+            if port = '443' then
+              BufDataSet1.FieldByName('HTTPS').AsBoolean := (PortStatus = 'open');
             Node2 := node2.Nextsibling;
           end;
         end;
         Node1 := Node1.NextSibling;
       end;
-      If BufDataSet1.State = dsEdit Then
-      Begin
+      if BufDataSet1.State = dsEdit then
+      begin
         BufDataSet1.FieldByName('Hostname').AsString := Hostname;
         BufDataSet1.Post;
       end;
-      Application.Processmessages;
+      Application.ProcessMessages;
       Node := Node.NextSibling;
     end;
   finally
     Doc.Free;
   end;
-  Memo1.Lines.Add(IntToStr(Count)+' IP addresses was scanned');
+  Memo1.Lines.Add(IntToStr(Count) + ' IP addresses was scanned');
 end;
 
-Procedure TMainForm.LoadDataBase(FlNm:String);
-Var
-  Fl:TextFile;
-  St:String;
+procedure TMainForm.LoadDataBase(FlNm: string);
+var
+  Fl: TextFile;
+  St: string;
   StL: TStringList;
 
 begin
-  If BufDataSet1.Active Then
-    If BufDataSet1.RecordCount > 0 Then
-      If MessageDlg('Do you want to ovwerwrite the database?',mtWarning,[mbyes,mbNo],0) = mrYes Then
-          EmptyDataBase
-      Else
+  if BufDataSet1.Active then
+    if BufDataSet1.RecordCount > 0 then
+      if MessageDlg('Do you want to ovwerwrite the database?', mtWarning,
+        [mbYes, mbNo], 0) = mrYes then
+        EmptyDataBase
+      else
         Exit;
 
-  StL:= TStringList.Create;
-  Try
-    AssignFile(Fl,FlNm);
+  StL := TStringList.Create;
+  try
+    AssignFile(Fl, FlNm);
     Reset(Fl);
-    ReadLn(Fl,St);
-    Split(St,';',Stl);
+    ReadLn(Fl, St);
+    Split(St, ';', Stl);
     CloseFile(Fl);
-  Except
-    ShowMessage ('Cannot open '+Flnm);
+  except
+    ShowMessage('Cannot open ' + Flnm);
     Exit;
   end;
-  If StL.Count <> 11 Then
+  if StL.Count <> 11 then
   begin
-    ShowMessage(OD1.Filename+' has a wrong format');
+    ShowMessage(OD1.Filename + ' has a wrong format');
   end
-  Else
+  else
   begin
-    If Not BufDataSet1.Active Then
+    if not BufDataSet1.Active then
       BufDataSet1.CreateDataSet;
     Reset(Fl);
-    While Not EoF(Fl) Do
+    while not EOF(Fl) do
     begin
-      ReadLn(Fl,St);
-      Split(St,';',Stl);
-      Try
-        With  BufDataSet1 Do
-        Begin
+      ReadLn(Fl, St);
+      Split(St, ';', Stl);
+      try
+        with  BufDataSet1 do
+        begin
           Append;
           FieldByName('Mac').AsString := StL[0];
           FieldByName('IP').AsString := StL[1];
@@ -579,8 +703,8 @@ begin
           FieldByName('Nagios').AsString := StL[10];
           Post;
         end;
-      Except
-        ShowMessage('Could not read the line: '+St);
+      except
+        ShowMessage('Could not read the line: ' + St);
       end;
     end;
     CloseFile(Fl);
@@ -589,12 +713,12 @@ begin
 
 end;
 
-Procedure TMainForm.EmptyDatabase;
+procedure TMainForm.EmptyDatabase;
 begin
-  With BufDataset1 Do
+  with BufDataset1 do
   begin
     First;
-    While Not EoF Do
+    while not EOF do
     begin
       Edit;
       Delete;
@@ -602,5 +726,16 @@ begin
     end;
   end;
 end;
-end.
 
+procedure TMainForm.ShowMyMessage(Message: string);
+var
+  ShowIt: string;
+begin
+  FMyShowMessage.Message.Caption := Message;
+  ShowIt := GetStdIni('Messages', Message, 'True');
+  if ShowIt = 'True' then
+    FMyShowMessage.ShowModal;
+
+end;
+
+end.

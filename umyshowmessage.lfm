@@ -1,0 +1,38 @@
+object FMyShowMessage: TFMyShowMessage
+  Left = 527
+  Height = 146
+  Top = 239
+  Width = 320
+  Caption = 'FMyShowMessage'
+  ClientHeight = 146
+  ClientWidth = 320
+  OnClose = FormClose
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  LCLVersion = '1.6.0.4'
+  object Message: TLabel
+    Left = 88
+    Height = 17
+    Top = 32
+    Width = 51
+    Caption = 'Message'
+    ParentColor = False
+  end
+  object Button1: TButton
+    Left = 224
+    Height = 25
+    Top = 80
+    Width = 75
+    Caption = 'OK'
+    OnClick = Button1Click
+    TabOrder = 0
+  end
+  object CB1: TCheckBox
+    Left = 24
+    Height = 22
+    Top = 112
+    Width = 204
+    Caption = 'Do not show this message again'
+    TabOrder = 1
+  end
+end

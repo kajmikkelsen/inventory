@@ -1,3 +1,8 @@
+// Copyright 2017, Kaj Mikkelsen
+// This software is distributed under the GPL 3 license
+// The full text of the license can be found in the aboutbox
+// as well as in the file "Copying"
+
 unit ugroupedit;
 
 {$mode objfpc}{$H+}
@@ -38,7 +43,7 @@ type
     { private declarations }
   public
     { public declarations }
-    Groups: String;
+    Groups: string;
   end;
 
 var
@@ -47,25 +52,24 @@ var
 implementation
 
 {$R *.lfm}
-Uses
+uses
   MyLib;
 
 { TFGroupEdit }
-
 procedure TFGroupEdit.OKButtonClick(Sender: TObject);
-Var
-  i:Integer;
+var
+  i: integer;
   MyComponent: TComponent;
 begin
   Groups := '';
-  For i := 1 to 15 Do
+  for i := 1 to 15 do
   begin
-    MyComponent := FGroupEdit.FindComponent('CheckBox'+IntToStr(i));
-    If TCheckBox(MyComponent).Checked Then
-    Begin
-      If Groups <> '' Then
-        Groups := Groups+',';
-      Groups := Groups+TCheckBox(MyComponent).Caption;
+    MyComponent := FGroupEdit.FindComponent('CheckBox' + IntToStr(i));
+    if TCheckBox(MyComponent).Checked then
+    begin
+      if Groups <> '' then
+        Groups := Groups + ',';
+      Groups := Groups + TCheckBox(MyComponent).Caption;
     end;
   end;
   ModalResult := mrOk;
@@ -77,43 +81,43 @@ begin
 end;
 
 procedure TFGroupEdit.FormActivate(Sender: TObject);
-Var
-    i,i1:Integer;
-    St:STring;
-    MyComponent: TComponent;
-    Strl: TStringList;
+var
+  i, i1: integer;
+  St: string;
+  MyComponent: TComponent;
+  Strl: TStringList;
 begin
   Strl := TStringList.Create;
-  If Groups <> '' Then
-    Split(Groups,',',Strl);
-   For i := 0 to 14 Do
+  if Groups <> '' then
+    Split(Groups, ',', Strl);
+  for i := 0 to 14 do
   begin
-    If i < 10 Then
-      St := 'Group0'+IntToSTr(i)
-    Else
-      St := 'Group'+IntToStr(i);
-    MyComponent := FGroupEdit.FindComponent('CheckBox'+IntToStr(i+1));
-    If MyComponent <> Nil Then
-    Begin
-      TCheckBox(MyComponent).Caption := GetStdIni('Group',St,'');
+    if i < 10 then
+      St := 'Group0' + IntToStr(i)
+    else
+      St := 'Group' + IntToStr(i);
+    MyComponent := FGroupEdit.FindComponent('CheckBox' + IntToStr(i + 1));
+    if MyComponent <> nil then
+    begin
+      TCheckBox(MyComponent).Caption := GetStdIni('Group', St, '');
       TCheckBox(MyComponent).Checked := False;
-      If TCheckBox(MyComponent).Caption <> '' Then
-      Begin
+      if TCheckBox(MyComponent).Caption <> '' then
+      begin
         TCheckBox(MyComponent).Enabled := True;
-        For i1 := 0 To Strl.Count - 1 Do
-          If TCheckBox(MyComponent).Caption = Strl[i1] Then
-             TCheckBox(MyComponent).Checked := True;
+        for i1 := 0 to Strl.Count - 1 do
+          if TCheckBox(MyComponent).Caption = Strl[i1] then
+            TCheckBox(MyComponent).Checked := True;
       end
-      Else
+      else
         TCheckBox(MyComponent).Enabled := False;
     end;
   end;
-   Strl.Free;
+  Strl.Free;
 end;
 
 procedure TFGroupEdit.FormCreate(Sender: TObject);
 begin
-  RestoreForm(FGroupEdit)
+  RestoreForm(FGroupEdit);
 end;
 
 procedure TFGroupEdit.FormDestroy(Sender: TObject);

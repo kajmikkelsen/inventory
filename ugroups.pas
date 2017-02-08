@@ -1,3 +1,8 @@
+// Copyright 2017, Kaj Mikkelsen
+// This software is distributed under the GPL 3 license
+// The full text of the license can be found in the aboutbox
+// as well as in the file "Copying"
+
 unit UGroups;
 
 {$mode objfpc}{$H+}
@@ -25,108 +30,112 @@ type
   private
     { private declarations }
   public
-    Typ: String;
+    Typ: string;
     { public declarations }
   end;
+
+const
+  MaxPoster = 25;
 
 var
   FGroups: TFGroups;
 
 implementation
- Uses
-   MyLib;
+
+uses
+  MyLib;
 
 {$R *.lfm}
 
- { TFGroups }
+{ TFGroups }
 
 procedure TFGroups.FormCreate(Sender: TObject);
-Var
-  i:Integer;
-  St: String;
+var
+  i: integer;
+  St: string;
 begin
+  SG1.RowCount := MaxPoster;
   RestoreForm(FGroups);
-  SG1.DefaultColWidth:=SG1.Width-2;
-  For i := 0 to 14 Do
+  SG1.DefaultColWidth := SG1.Width - 2;
+  for i := 0 to MaxPoster - 1 do
   begin
-    If i < 10 Then
-      St := Typ+'0'+IntToSTr(i)
-    Else
-      St := Typ+IntToStr(i);
-    SG1.Cells[0,i] := GetStdIni(Typ,St,'');
+    if i < 10 then
+      St := Typ + '0' + IntToStr(i)
+    else
+      St := Typ + IntToStr(i);
+    SG1.Cells[0, i] := GetStdIni(Typ, St, '');
   end;
 end;
 
 procedure TFGroups.CancelButtonClick(Sender: TObject);
-Var
-  i:Integer;
-  St: String;
+var
+  i: integer;
+  St: string;
 begin
-  For i := 0 to 14 Do
+  for i := 0 to MaxPoster - 1 do
   begin
-    If i < 10 Then
-      St := typ+'0'+IntToSTr(i)
-    Else
-      St := Typ+IntToStr(i);
-    SG1.Cells[0,i] := GetStdIni(Typ,St,'');
+    if i < 10 then
+      St := typ + '0' + IntToStr(i)
+    else
+      St := Typ + IntToStr(i);
+    SG1.Cells[0, i] := GetStdIni(Typ, St, '');
   end;
-  ModalResult := MrCancel;
+  ModalResult := mrCancel;
 end;
 
 procedure TFGroups.FormActivate(Sender: TObject);
-  Var
-    i:Integer;
-    St: String;
+var
+  i: integer;
+  St: string;
+begin
+  Caption := Typ;
+  for i := 0 to MaxPoster - 1 do
   begin
-    Caption := Typ;
-    For i := 0 to 14 Do
-    begin
-      If i < 10 Then
-        St := typ+'0'+IntToSTr(i)
-      Else
-        St := Typ+IntToStr(i);
-      SG1.Cells[0,i] := GetStdIni(Typ,St,'');
-    end;
+    if i < 10 then
+      St := typ + '0' + IntToStr(i)
+    else
+      St := Typ + IntToStr(i);
+    SG1.Cells[0, i] := GetStdIni(Typ, St, '');
+  end;
 end;
 
- procedure TFGroups.FormDestroy(Sender: TObject);
- begin
-   SaveForm(FGroups);
- end;
+procedure TFGroups.FormDestroy(Sender: TObject);
+begin
+  SaveForm(FGroups);
+end;
 
 procedure TFGroups.SaveButtonClick(Sender: TObject);
-Var
-  i,Count: Integer;
-  St: String;
+var
+  i, Count: integer;
+  St: string;
 begin
   Count := 0;
-  For I := 0 to 14 Do
+  for I := 0 to MaxPoster - 1 do
   begin
-    If SG1.Cells[0,i] <> '' Then
-    Begin
-      If Count < 10 Then
-        St := Typ+'0'+IntToStr(Count)
-      Else
-        St := Typ+IntToStr(Count);
-      PutStdIni(Typ,St,SG1.Cells[0,i]);
-      Count := Count+1;
+    if SG1.Cells[0, i] <> '' then
+    begin
+      if Count < 10 then
+        St := Typ + '0' + IntToStr(Count)
+      else
+        St := Typ + IntToStr(Count);
+      PutStdIni(Typ, St, SG1.Cells[0, i]);
+      Count := Count + 1;
     end;
   end;
-  For i := Count to 14 Do
-  Begin
-    If Count < 10 Then
-      St := Typ+'0'+IntToStr(i)
-    Else
-      St := Typ+IntToStr(i);
-    PutStdIni(Typ,St,'');
+  for i := Count to MaxPoster - 1 do
+  begin
+    if Count < 10 then
+      St := Typ + '0' + IntToStr(i)
+    else
+      St := Typ + IntToStr(i);
+    PutStdIni(Typ, St, '');
   end;
-  ModalResult := MrOK;
+  ModalResult := mrOk;
 end;
 
 procedure TFGroups.SG1Resize(Sender: TObject);
 begin
-  SG1.DefaultColWidth:=SG1.Width-2;
+  SG1.DefaultColWidth := SG1.Width - 2;
 end;
 
 end.
-

@@ -1,3 +1,8 @@
+// Copyright 2017, Kaj Mikkelsen
+// This software is distributed under the GPL 3 license
+// The full text of the license can be found in the aboutbox
+// as well as in the file "Copying"
+
 unit UEdit;
 
 {$mode objfpc}{$H+}
@@ -6,7 +11,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  DbCtrls;
+  DBCtrls;
 
 type
 
@@ -53,12 +58,14 @@ var
   EditForm: TEditForm;
 
 implementation
- Uses
-   Main,
-   MyLib;
+
+uses
+  Main,
+  MyLib;
+
 {$R *.lfm}
 
- { TEditForm }
+{ TEditForm }
 
 procedure TEditForm.FormCreate(Sender: TObject);
 begin
@@ -82,43 +89,49 @@ begin
 end;
 
 procedure TEditForm.FormActivate(Sender: TObject);
-Var
-  i:Integer;
-  St,ST1: String;
+var
+  i: integer;
+  St, ST1: string;
 begin
   CB1.Clear;
   CB2.Clear;
   CB1.Text := DBEdit4.Text;
   CB2.Text := DBEdit5.Text;
-  For i := 0 to 14 do
+  for i := 0 to 24 do
   begin
-    If i < 10 Then St := 'OS0'+IntToStr(i)  else St := 'OS'+IntToStr(i);
-    St1 := GetStdIni('OS',St,'');
-    If St1 <> '' Then
+    if i < 10 then
+      St := 'OS0' + IntToStr(i)
+    else
+      St := 'OS' + IntToStr(i);
+    St1 := GetStdIni('OS', St, '');
+    if St1 <> '' then
       CB1.Items.Add(St1);
   end;
 
-  For i := 0 to 14 do
+  for i := 0 to 24 do
   begin
-    If i < 10 Then St := 'Versions0'+IntToStr(i)  else St := 'Versions'+IntToStr(i);;
-    St1 := GetStdIni('Versions',St,'');
-    If St1 <> '' Then
+    if i < 10 then
+      St := 'Versions0' + IntToStr(i)
+    else
+      St := 'Versions' + IntToStr(i);
+    ;
+    St1 := GetStdIni('Versions', St, '');
+    if St1 <> '' then
       CB2.Items.Add(St1);
   end;
   MainForm.BufDataset1.Edit;
 end;
 
- procedure TEditForm.FormDestroy(Sender: TObject);
- begin
-   SaveForm(EditForm);
-   Close;
- end;
+procedure TEditForm.FormDestroy(Sender: TObject);
+begin
+  SaveForm(EditForm);
+  Close;
+end;
 
 procedure TEditForm.SaveButtonClick(Sender: TObject);
 begin
   MainForm.BufDataset1.Post;
-  ModalResult := mrOK;
+  ModalResult := mrOk;
 end;
 
 end.
-

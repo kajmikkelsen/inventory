@@ -1,3 +1,8 @@
+// Copyright 2017, Kaj Mikkelsen
+// This software is distributed under the GPL 3 license
+// The full text of the license can be found in the aboutbox
+// as well as in the file "Copying"
+
 unit upreferences;
 
 {$mode objfpc}{$H+}
@@ -38,10 +43,13 @@ var
   FPref: TFPref;
 
 implementation
-Uses
+
+uses
   MyLib;
-Var
-  GetIFcmd: String;
+
+var
+  GetIFcmd: string;
+
 {$R *.lfm}
 
 { TFPref }
@@ -53,36 +61,39 @@ end;
 
 procedure TFPref.Button1Click(Sender: TObject);
 begin
-  PutStdIni('Settings','IFcmd',CB1.Text);
-  PutStdIni('Commands','ScanCmd',EScanCmd.Text);
-  PutStdIni('Commands','GetIfCmd',EIfCmd.Text);
-  PutStdIni('Commands','NmapCmd',ENmap.Text);
-  If LoadLast.Checked Then
-    PutStdIni('Settings','LoadLast','True')
-  Else
-    PutStdIni('Settings','LoadLast','False');
+  PutStdIni('Settings', 'IFcmd', CB1.Text);
+  PutStdIni('Commands', 'ScanCmd', EScanCmd.Text);
+  PutStdIni('Commands', 'GetIfCmd', EIfCmd.Text);
+  PutStdIni('Commands', 'NmapCmd', ENmap.Text);
+  if LoadLast.Checked then
+    PutStdIni('Settings', 'LoadLast', 'True')
+  else
+    PutStdIni('Settings', 'LoadLast', 'False');
 
   Close;
 end;
 
 procedure TFPref.FormActivate(Sender: TObject);
-Var
+var
   StrList: TStringList;
 begin
-  EifCmd.Text := GetStdIni('Commands','GetIfCmd','ifconfig -a | grep Link | grep -v inet6| awk '' { print $1 }  ''');
-  EScanCmd.Text := GetStdIni('Commands','ScanCmd','arp-scan -I <Interface> -l -q | tail  -n +3 | head -n -3');
-  ENmap.Text := GetSTdIni('Commands','NmapCmd','nmap -iL <FileName1> -p 80,20,22,443,161 -oX <FileName2>');
-  LoadLast.Checked := (GetSTdIni('Settings','LoadLast','True') = 'True');
+  EifCmd.Text := GetStdIni('Commands', 'GetIfCmd',
+    'ifconfig -a | grep Link | grep -v inet6| awk '' { print $1 }  ''');
+  EScanCmd.Text := GetStdIni('Commands', 'ScanCmd',
+    'arp-scan -I <Interface> -l -q | tail  -n +3 | head -n -3');
+  ENmap.Text := GetSTdIni('Commands', 'NmapCmd',
+    'nmap -iL <FileName1> -p 80,20,22,443,161 -oX <FileName2>');
+  LoadLast.Checked := (GetSTdIni('Settings', 'LoadLast', 'True') = 'True');
 
-  GetIFcmd := '/bin/bash -c "'+EIfCmd.Text+'"';
+  GetIFcmd := '/bin/bash -c "' + EIfCmd.Text + '"';
 
-  If CB1.Items.Count = 0 Then
-  Begin
+  if CB1.Items.Count = 0 then
+  begin
 
     StrList := TStringList.Create;
-    DoCommand(GetIFcmd,StrList);
+    DoCommand(GetIFcmd, StrList);
     CB1.Items.Assign(StrList);
-    CB1.Text := GetStdIni('Settings','IFcmd',CB1.Items[0]);
+    CB1.Text := GetStdIni('Settings', 'IFcmd', CB1.Items[0]);
     StrList.Free;
   end;
 end;
@@ -95,8 +106,7 @@ end;
 
 procedure TFPref.FormDestroy(Sender: TObject);
 begin
-  SaveForm(FPref)
+  SaveForm(FPref);
 end;
 
 end.
-

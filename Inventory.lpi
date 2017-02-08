@@ -35,7 +35,7 @@
         <PackageName Value="LCL"/>
       </Item2>
     </RequiredPackages>
-    <Units Count="9">
+    <Units Count="11">
       <Unit0>
         <Filename Value="Inventory.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -87,14 +87,28 @@
         <Filename Value="uwrite_port.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="FWrite_Port"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
       </Unit7>
       <Unit8>
         <Filename Value="uabout.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="FAbout"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
       </Unit8>
+      <Unit9>
+        <Filename Value="umyshowmessage.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FMyShowMessage"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="UMyShowMessage"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="COPYING.txt"/>
+        <IsPartOfProject Value="True"/>
+      </Unit10>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

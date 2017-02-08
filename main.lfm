@@ -16,7 +16,7 @@ object MainForm: TMainForm
     Left = 24
     Height = 112
     Top = 343
-    Width = 384
+    Width = 488
     Anchors = [akLeft, akRight, akBottom]
     ScrollBars = ssAutoBoth
     TabOrder = 0
@@ -72,30 +72,7 @@ object MainForm: TMainForm
     BevelInner = bvLowered
     BevelWidth = 2
     Caption = 'Items: 0'
-    ClientHeight = 31
-    ClientWidth = 170
     TabOrder = 3
-    object Panel4: TPanel
-      Left = 0
-      Height = 31
-      Top = 0
-      Width = 170
-      Anchors = [akLeft, akBottom]
-      BevelInner = bvLowered
-      BevelWidth = 2
-      Caption = 'Items: 0'
-      TabOrder = 0
-    end
-  end
-  object Panel3: TPanel
-    Left = 504
-    Height = 31
-    Top = 471
-    Width = 455
-    Anchors = [akLeft, akRight, akBottom]
-    BevelInner = bvLowered
-    BevelWidth = 2
-    TabOrder = 4
   end
   object Panel5: TPanel
     Left = 336
@@ -106,7 +83,104 @@ object MainForm: TMainForm
     BevelInner = bvLowered
     BevelWidth = 2
     Caption = 'Interface:'
+    TabOrder = 4
+  end
+  object Panel7: TPanel
+    Left = 672
+    Height = 31
+    Top = 471
+    Width = 274
+    Anchors = [akLeft, akRight, akBottom]
+    BevelInner = bvLowered
+    BevelWidth = 2
     TabOrder = 5
+  end
+  object Panel6: TPanel
+    Left = 504
+    Height = 31
+    Top = 471
+    Width = 170
+    Anchors = [akLeft, akBottom]
+    BevelInner = bvLowered
+    BevelWidth = 2
+    Caption = 'Actions'
+    TabOrder = 6
+  end
+  object Panel3: TPanel
+    Left = 536
+    Height = 112
+    Top = 343
+    Width = 392
+    Anchors = [akTop, akRight]
+    BevelInner = bvLowered
+    Caption = 'Panel3'
+    ClientHeight = 112
+    ClientWidth = 392
+    TabOrder = 7
+    object GroupBox1: TGroupBox
+      Left = 2
+      Height = 108
+      Top = 2
+      Width = 388
+      Align = alClient
+      Caption = 'Filter'
+      ClientHeight = 90
+      ClientWidth = 386
+      TabOrder = 0
+      object CB1: TComboBox
+        Left = 104
+        Height = 31
+        Top = 6
+        Width = 184
+        ItemHeight = 0
+        Style = csDropDownList
+        TabOrder = 0
+      end
+      object Edit1: TEdit
+        Left = 103
+        Height = 27
+        Top = 46
+        Width = 184
+        TabOrder = 1
+      end
+      object Button1: TButton
+        Left = 294
+        Height = 25
+        Top = 12
+        Width = 75
+        Anchors = [akTop, akRight]
+        Caption = 'Apply filter'
+        Default = True
+        OnClick = Button1Click
+        TabOrder = 2
+      end
+      object Button2: TButton
+        Left = 294
+        Height = 25
+        Top = 48
+        Width = 75
+        Anchors = [akTop, akRight]
+        Caption = 'Cancel filter'
+        OnClick = Button2Click
+        TabOrder = 3
+      end
+      object Label3: TLabel
+        Left = 24
+        Height = 17
+        Top = 22
+        Width = 45
+        Caption = 'Filter on'
+        ParentColor = False
+      end
+      object Label4: TLabel
+        Left = 24
+        Height = 17
+        Top = 58
+        Width = 41
+        Caption = 'Regexp'
+        ParentColor = False
+      end
+    end
   end
   object MainMenu1: TMainMenu
     left = 192
@@ -143,7 +217,7 @@ object MainForm: TMainForm
           Action = AWriteFile_ports
         end
         object MenuItem9: TMenuItem
-          Caption = 'Groups'
+          Action = AWriteAll
         end
       end
       object MenuItem2: TMenuItem
@@ -173,9 +247,11 @@ object MainForm: TMainForm
     end
     object MenuItem10: TMenuItem
       Action = AAbout
+      OnClick = MenuItem10Click
     end
     object MExit: TMenuItem
       Action = Quit
+      OnClick = MExitClick
     end
   end
   object AL1: TActionList
@@ -237,6 +313,10 @@ object MainForm: TMainForm
       Caption = 'About'
       OnExecute = AAboutExecute
     end
+    object AWriteAll: TAction
+      Caption = 'All (Filtered)'
+      OnExecute = AWriteAllExecute
+    end
   end
   object BufDataset1: TBufDataset
     PacketRecords = -1
@@ -256,7 +336,7 @@ object MainForm: TMainForm
       item
         Name = 'Hostname'
         DataType = ftString
-        Size = 30
+        Size = 100
       end    
       item
         Name = 'OS'
@@ -297,6 +377,7 @@ object MainForm: TMainForm
         Name = 'Nagios'
         DataType = ftBoolean
       end>
+    OnFilterRecord = BufDataset1FilterRecord
     left = 480
     top = 80
   end
@@ -318,5 +399,10 @@ object MainForm: TMainForm
     Filter = 'CSV files|*.csv|All files|*.*'
     left = 344
     top = 80
+  end
+  object SD2: TSaveDialog
+    Options = [ofOverwritePrompt, ofPathMustExist, ofEnableSizing, ofViewDetail]
+    left = 544
+    top = 96
   end
 end

@@ -1,3 +1,8 @@
+// Copyright 2017, Kaj Mikkelsen
+// This software is distributed under the GPL 3 license
+// The full text of the license can be found in the aboutbox
+// as well as in the file "Copying"
+
 unit uabout;
 
 {$mode objfpc}{$H+}
@@ -16,6 +21,8 @@ type
     Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
+    Label4: TLabel;
+    Label5: TLabel;
     Memo1: TMemo;
     procedure Button1Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -30,8 +37,10 @@ var
   FAbout: TFAbout;
 
 implementation
-Uses
+
+uses
   MyLib;
+
 {$R *.lfm}
 
 { TFAbout }
@@ -43,7 +52,7 @@ end;
 
 procedure TFAbout.Button1Click(Sender: TObject);
 begin
-  ModalResult := mrOK;
+  ModalResult := mrOk;
 end;
 
 procedure TFAbout.FormDestroy(Sender: TObject);
@@ -52,4 +61,3 @@ begin
 end;
 
 end.
-

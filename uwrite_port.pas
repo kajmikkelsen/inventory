@@ -1,3 +1,8 @@
+// Copyright 2017, Kaj Mikkelsen
+// This software is distributed under the GPL 3 license
+// The full text of the license can be found in the aboutbox
+// as well as in the file "Copying"
+
 unit uwrite_port;
 
 {$mode objfpc}{$H+}
@@ -31,8 +36,10 @@ var
   FWrite_Port: TFWrite_Port;
 
 implementation
-Uses
-  MyLib,Main;
+
+uses
+  MyLib, Main;
+
 {$R *.lfm}
 
 { TFWrite_Port }
@@ -43,33 +50,34 @@ begin
 end;
 
 procedure TFWrite_Port.Button1Click(Sender: TObject);
-Var
-  Fl:TextFile;
+var
+  Fl: TextFile;
 begin
-  If Sd1.Execute Then
-  Begin
-    PutStdIni('Settings','WriteSaveDir',SD1.InitialDir);
-    PutStdIni('Settings','WriteSaveFile',SD1.FileName);
-    Try
-      AssignFile(fl,SD1.FileName);
+  if Sd1.Execute then
+  begin
+    PutStdIni('Settings', 'WriteSaveDir', SD1.InitialDir);
+    PutStdIni('Settings', 'WriteSaveFile', SD1.FileName);
+    try
+      AssignFile(fl, SD1.FileName);
       Rewrite(Fl);
-    Except
-      ShowMessage('Could not write to file'+SD1.FileName);
+    except
+      ShowMessage('Could not write to file' + SD1.FileName);
       Exit;
     end;
-    With MainForm.BufDataset1 do
+    with MainForm.BufDataset1 do
     begin
       First;
-      While Not Eof Do
+      while not EOF do
       begin
-        If FieldByName(RadioGroup1.Items[RadioGroup1.ItemIndex]).AsBoolean Then
-          WriteLn(fl,FieldByName('Hostname').AsString);
+        if FieldByName(RadioGroup1.Items[RadioGroup1.ItemIndex]).AsBoolean then
+          if FieldByName('Hostname').AsString <> '' then
+            WriteLn(fl, FieldByName('Hostname').AsString);
         Next;
       end;
     end;
+    CloseFile(Fl);
   end;
-  CloseFile(Fl);
-  ModalResult := mrOK;
+  ModalResult := mrOk;
 end;
 
 procedure TFWrite_Port.FormCreate(Sender: TObject);
@@ -83,4 +91,3 @@ begin
 end;
 
 end.
-

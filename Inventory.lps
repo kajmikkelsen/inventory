@@ -3,12 +3,12 @@
   <ProjectSession>
     <Version Value="9"/>
     <BuildModes Active="Default"/>
-    <Units Count="13">
+    <Units Count="17">
       <Unit0>
         <Filename Value="Inventory.lpr"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="8"/>
-        <CursorPos Y="17"/>
+        <CursorPos X="5" Y="39"/>
         <UsageCount Value="223"/>
         <Loaded Value="True"/>
       </Unit0>
@@ -20,13 +20,12 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Main"/>
         <EditorIndex Value="3"/>
-        <TopLine Value="434"/>
-        <CursorPos Y="445"/>
+        <CursorPos X="54" Y="9"/>
         <UsageCount Value="223"/>
         <Bookmarks Count="3">
-          <Item0 Y="221" ID="3"/>
-          <Item1 Y="341" ID="2"/>
-          <Item2 X="9" Y="333" ID="1"/>
+          <Item0 Y="314" ID="3"/>
+          <Item1 Y="563" ID="1"/>
+          <Item2 Y="240" ID="2"/>
         </Bookmarks>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -38,8 +37,7 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <EditorIndex Value="9"/>
-        <TopLine Value="51"/>
-        <CursorPos X="46" Y="63"/>
+        <CursorPos X="5" Y="112"/>
         <UsageCount Value="223"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -49,8 +47,8 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="MyLib"/>
         <EditorIndex Value="1"/>
-        <TopLine Value="245"/>
-        <CursorPos X="21" Y="273"/>
+        <TopLine Value="69"/>
+        <CursorPos X="45" Y="80"/>
         <UsageCount Value="208"/>
         <Loaded Value="True"/>
       </Unit3>
@@ -62,8 +60,7 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="UEdit"/>
         <EditorIndex Value="7"/>
-        <TopLine Value="88"/>
-        <CursorPos X="29" Y="108"/>
+        <CursorPos X="5" Y="137"/>
         <UsageCount Value="264"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -75,8 +72,6 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="UGroups"/>
-        <TopLine Value="84"/>
-        <CursorPos X="18" Y="108"/>
         <UsageCount Value="263"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -88,186 +83,224 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <EditorIndex Value="2"/>
-        <TopLine Value="97"/>
-        <CursorPos X="22" Y="121"/>
+        <CursorPos X="27" Y="120"/>
         <UsageCount Value="211"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit6>
       <Unit7>
+        <Filename Value="uwrite_port.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FWrite_Port"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <EditorIndex Value="6"/>
+        <TopLine Value="65"/>
+        <CursorPos Y="79"/>
+        <UsageCount Value="175"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="uabout.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FAbout"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="5"/>
+        <TopLine Value="35"/>
+        <CursorPos X="5" Y="63"/>
+        <UsageCount Value="173"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="umyshowmessage.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="FMyShowMessage"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="UMyShowMessage"/>
+        <EditorIndex Value="4"/>
+        <TopLine Value="38"/>
+        <CursorPos X="73" Y="50"/>
+        <UsageCount Value="83"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="COPYING.txt"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="10"/>
+        <CursorPos X="124" Y="8"/>
+        <UsageCount Value="80"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="None"/>
+      </Unit10>
+      <Unit11>
         <Filename Value="/usr/share/fpcsrc/3.0.0/packages/rtl-extra/src/inc/socketsh.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="149"/>
         <CursorPos X="11" Y="162"/>
-        <UsageCount Value="47"/>
-      </Unit7>
-      <Unit8>
+        <UsageCount Value="37"/>
+      </Unit11>
+      <Unit12>
         <Filename Value="/usr/share/fpcsrc/3.0.0/rtl/linux/ptypes.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="142"/>
         <CursorPos X="5" Y="155"/>
-        <UsageCount Value="47"/>
-      </Unit8>
-      <Unit9>
+        <UsageCount Value="37"/>
+      </Unit12>
+      <Unit13>
         <Filename Value="../synapse/source/demo/echo/echo.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="41"/>
         <CursorPos Y="66"/>
-        <UsageCount Value="41"/>
-      </Unit9>
-      <Unit10>
+        <UsageCount Value="31"/>
+      </Unit13>
+      <Unit14>
         <Filename Value="/usr/share/lazarus/1.6/lcl/dbgrids.pas"/>
         <UnitName Value="DBGrids"/>
-        <EditorIndex Value="6"/>
-        <TopLine Value="237"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="218"/>
         <CursorPos X="3" Y="218"/>
-        <UsageCount Value="35"/>
-        <Loaded Value="True"/>
-      </Unit10>
-      <Unit11>
-        <Filename Value="uwrite_port.pas"/>
-        <IsPartOfProject Value="True"/>
-        <ComponentName Value="FWrite_Port"/>
-        <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="5"/>
-        <TopLine Value="39"/>
-        <CursorPos X="17" Y="54"/>
-        <UsageCount Value="69"/>
-        <Loaded Value="True"/>
-        <LoadedDesigner Value="True"/>
-      </Unit11>
-      <Unit12>
-        <Filename Value="uabout.pas"/>
-        <IsPartOfProject Value="True"/>
-        <ComponentName Value="FAbout"/>
-        <ResourceBaseClass Value="Form"/>
-        <IsVisibleTab Value="True"/>
-        <EditorIndex Value="4"/>
-        <TopLine Value="27"/>
-        <CursorPos X="23" Y="46"/>
-        <UsageCount Value="67"/>
-        <Loaded Value="True"/>
-        <LoadedDesigner Value="True"/>
-      </Unit12>
+        <UsageCount Value="50"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="/usr/share/lazarus/1.6/lcl/include/wincontrol.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="8162"/>
+        <CursorPos Y="8177"/>
+        <UsageCount Value="5"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="/usr/share/fpcsrc/3.0.0/packages/regexpr/src/regexpr.pas"/>
+        <UnitName Value="RegExpr"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="240"/>
+        <CursorPos Y="266"/>
+        <UsageCount Value="10"/>
+      </Unit16>
     </Units>
     <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
-        <Filename Value="uwrite_port.pas"/>
-        <Caret Line="77" Column="3" TopLine="53"/>
+        <Filename Value="main.pas"/>
+        <Caret Line="532" Column="9" TopLine="508"/>
       </Position1>
       <Position2>
-        <Filename Value="uwrite_port.pas"/>
-        <Caret Line="58" Column="61" TopLine="46"/>
+        <Filename Value="main.pas"/>
+        <Caret Line="71" Column="8" TopLine="58"/>
       </Position2>
       <Position3>
-        <Filename Value="uwrite_port.pas"/>
-        <Caret Line="59" Column="61" TopLine="47"/>
+        <Filename Value="main.pas"/>
+        <Caret Line="299" Column="2" TopLine="275"/>
       </Position3>
       <Position4>
-        <Filename Value="uwrite_port.pas"/>
-        <Caret Line="58" Column="61" TopLine="46"/>
+        <Filename Value="main.pas"/>
+        <Caret Line="533" Column="40" TopLine="520"/>
       </Position4>
       <Position5>
         <Filename Value="main.pas"/>
-        <Caret Line="217" TopLine="217"/>
       </Position5>
       <Position6>
-        <Filename Value="uwrite_port.pas"/>
-        <Caret Line="43" Column="8" TopLine="28"/>
+        <Filename Value="main.pas"/>
+        <Caret Line="71" Column="8" TopLine="48"/>
       </Position6>
       <Position7>
-        <Filename Value="uwrite_port.pas"/>
-        <Caret Line="72" Column="17" TopLine="51"/>
+        <Filename Value="main.pas"/>
+        <Caret Line="299" Column="68" TopLine="275"/>
       </Position7>
       <Position8>
-        <Filename Value="uwrite_port.pas"/>
-        <Caret Line="71" Column="17" TopLine="50"/>
+        <Filename Value="main.pas"/>
+        <Caret Line="533" Column="60" TopLine="522"/>
       </Position8>
       <Position9>
-        <Filename Value="uwrite_port.pas"/>
-        <Caret Line="66" Column="50" TopLine="50"/>
+        <Filename Value="main.pas"/>
+        <Caret Line="534" Column="8" TopLine="522"/>
       </Position9>
       <Position10>
         <Filename Value="main.pas"/>
-        <Caret Line="103" Column="40" TopLine="80"/>
+        <Caret Line="71" Column="8" TopLine="58"/>
       </Position10>
       <Position11>
         <Filename Value="main.pas"/>
-        <Caret Line="104" Column="40" TopLine="81"/>
+        <Caret Line="299" Column="6" TopLine="275"/>
       </Position11>
       <Position12>
-        <Filename Value="uabout.pas"/>
-        <Caret Line="40" Column="20" TopLine="16"/>
+        <Filename Value="main.pas"/>
+        <Caret Line="300" Column="6" TopLine="276"/>
       </Position12>
       <Position13>
-        <Filename Value="uabout.pas"/>
-        <Caret Line="41" Column="20" TopLine="17"/>
+        <Filename Value="main.pas"/>
+        <Caret Line="301" Column="9" TopLine="277"/>
       </Position13>
       <Position14>
-        <Filename Value="uabout.pas"/>
-        <Caret Line="42" Column="20" TopLine="18"/>
+        <Filename Value="main.pas"/>
+        <Caret Line="303" Column="41" TopLine="279"/>
       </Position14>
       <Position15>
-        <Filename Value="uabout.pas"/>
-        <Caret Line="36" Column="78" TopLine="19"/>
+        <Filename Value="main.pas"/>
+        <Caret Line="304" Column="42" TopLine="280"/>
       </Position15>
       <Position16>
-        <Filename Value="uabout.pas"/>
-        <Caret Line="37" Column="78" TopLine="20"/>
+        <Filename Value="main.pas"/>
+        <Caret Line="312" Column="23" TopLine="312"/>
       </Position16>
       <Position17>
         <Filename Value="main.pas"/>
-        <Caret Line="106" Column="16" TopLine="87"/>
+        <Caret Line="236" Column="3" TopLine="234"/>
       </Position17>
       <Position18>
         <Filename Value="main.pas"/>
-        <Caret Line="192" Column="33" TopLine="155"/>
+        <Caret Line="536" TopLine="529"/>
       </Position18>
       <Position19>
         <Filename Value="main.pas"/>
+        <Caret Line="237" TopLine="222"/>
       </Position19>
       <Position20>
         <Filename Value="main.pas"/>
-        <Caret Line="109" Column="18" TopLine="85"/>
+        <Caret Line="540" TopLine="520"/>
       </Position20>
       <Position21>
         <Filename Value="main.pas"/>
-        <Caret Line="184" Column="21" TopLine="160"/>
+        <Caret Line="254" Column="75" TopLine="231"/>
       </Position21>
       <Position22>
         <Filename Value="main.pas"/>
-        <Caret Line="257" Column="20" TopLine="234"/>
+        <Caret Line="253" Column="75" TopLine="230"/>
       </Position22>
       <Position23>
-        <Filename Value="main.pas"/>
-        <Caret Line="362" Column="18" TopLine="338"/>
+        <Filename Value="uwrite_port.pas"/>
+        <Caret Line="79" TopLine="65"/>
       </Position23>
       <Position24>
         <Filename Value="main.pas"/>
-        <Caret Line="389" Column="21" TopLine="365"/>
+        <Caret Line="251" Column="74" TopLine="172"/>
       </Position24>
       <Position25>
         <Filename Value="main.pas"/>
-        <Caret Line="439" TopLine="418"/>
       </Position25>
       <Position26>
         <Filename Value="main.pas"/>
-        <Caret Line="449" Column="3" TopLine="369"/>
+        <Caret Line="202" Column="27" TopLine="179"/>
       </Position26>
       <Position27>
         <Filename Value="main.pas"/>
+        <Caret Line="133" Column="20" TopLine="118"/>
       </Position27>
       <Position28>
         <Filename Value="main.pas"/>
-        <Caret Line="60" Column="9" TopLine="37"/>
+        <Caret Line="293" Column="32" TopLine="290"/>
       </Position28>
       <Position29>
         <Filename Value="main.pas"/>
-        <Caret Line="449" Column="3" TopLine="435"/>
+        <Caret Line="133" TopLine="106"/>
       </Position29>
       <Position30>
-        <Filename Value="uabout.pas"/>
-        <Caret Line="29" Column="56" TopLine="21"/>
+        <Filename Value="main.pas"/>
+        <Caret Line="201" Column="27" TopLine="178"/>
       </Position30>
     </JumpHistory>
   </ProjectSession>
