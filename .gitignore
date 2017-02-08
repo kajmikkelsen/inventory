@@ -3,5 +3,4 @@ Inventory
 *.o
 *.compiled
 *.ppu
-lib/x86_64-linux/umyshowmessage.lfm
-
+lib/
