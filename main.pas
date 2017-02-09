@@ -7,6 +7,8 @@
 // 0.01 Initial release
 // 0.02 Error in Regular Expression happened for all records.
 //      Changed so filter is discarded on RegEx error
+// 20170209
+//      Corrected anchors for filter panel/group box
 
 unit Main;
 

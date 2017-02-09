@@ -111,7 +111,7 @@ object MainForm: TMainForm
     Height = 112
     Top = 343
     Width = 392
-    Anchors = [akTop, akRight]
+    Anchors = [akRight, akBottom]
     BevelInner = bvLowered
     Caption = 'Panel3'
     ClientHeight = 112
@@ -123,6 +123,7 @@ object MainForm: TMainForm
       Top = 2
       Width = 388
       Align = alClient
+      Anchors = [akRight, akBottom]
       Caption = 'Filter'
       ClientHeight = 90
       ClientWidth = 386

@@ -19,13 +19,14 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Main"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="3"/>
-        <CursorPos X="54" Y="9"/>
+        <CursorPos X="53" Y="11"/>
         <UsageCount Value="223"/>
         <Bookmarks Count="3">
-          <Item0 Y="314" ID="3"/>
-          <Item1 Y="563" ID="1"/>
-          <Item2 Y="240" ID="2"/>
+          <Item0 Y="316" ID="3"/>
+          <Item1 Y="565" ID="1"/>
+          <Item2 Y="242" ID="2"/>
         </Bookmarks>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -107,7 +108,6 @@
         <ComponentName Value="FAbout"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="5"/>
         <TopLine Value="35"/>
         <CursorPos X="5" Y="63"/>
