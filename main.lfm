@@ -22,7 +22,7 @@ object MainForm: TMainForm
     TabOrder = 0
   end
   object DBGrid1: TDBGrid
-    Left = 24
+    Left = 32
     Height = 287
     Top = 40
     Width = 904
@@ -34,6 +34,7 @@ object MainForm: TMainForm
     TabOrder = 1
     OnColumnSized = DBGrid1ColumnSized
     OnDblClick = DBGrid1DblClick
+    OnPrepareCanvas = DBGrid1PrepareCanvas
   end
   object Label1: TLabel
     Left = 24

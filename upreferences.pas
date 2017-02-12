@@ -19,7 +19,14 @@ type
   TFPref = class(TForm)
     Button1: TButton;
     Button2: TButton;
+    Button3: TButton;
+    Button4: TButton;
     CB1: TComboBox;
+    ColorDialog1: TColorDialog;
+    Edit1: TEdit;
+    FontDialog1: TFontDialog;
+    Label5: TLabel;
+    Label6: TLabel;
     LoadLast: TCheckBox;
     EScanCmd: TEdit;
     EIfCmd: TEdit;
@@ -30,6 +37,8 @@ type
     Label4: TLabel;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
+    procedure Button3Click(Sender: TObject);
+    procedure Button4Click(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -45,7 +54,7 @@ var
 implementation
 
 uses
-  MyLib;
+  MyLib, Main;
 
 var
   GetIFcmd: string;
@@ -59,6 +68,20 @@ begin
   Close;
 end;
 
+procedure TFPref.Button3Click(Sender: TObject);
+begin
+  if ColorDialog1.Execute then
+    Edit1.Color := ColorDialog1.Color;
+  MainForm.OnlineCOlor := Edit1.Color;
+end;
+
+procedure TFPref.Button4Click(Sender: TObject);
+begin
+  if ColorDialog1.Execute then
+    Edit1.Font.Color := ColorDialog1.Color;
+  MainForm.OnlineFontColor := Edit1.Font.Color;
+end;
+
 procedure TFPref.Button1Click(Sender: TObject);
 begin
   PutStdIni('Settings', 'IFcmd', CB1.Text);
@@ -69,7 +92,8 @@ begin
     PutStdIni('Settings', 'LoadLast', 'True')
   else
     PutStdIni('Settings', 'LoadLast', 'False');
-
+  PutStdIni('Settings', 'OnlineTextColor', IntToStr(MainForm.OnlineFontColor));
+  PutStdIni('Settings', 'OnlineTextBackGround', IntToStr(MainForm.OnlineCOlor));
   Close;
 end;
 
@@ -92,10 +116,16 @@ begin
 
     StrList := TStringList.Create;
     DoCommand(GetIFcmd, StrList);
+    StrList.Add('All');
     CB1.Items.Assign(StrList);
     CB1.Text := GetStdIni('Settings', 'IFcmd', CB1.Items[0]);
     StrList.Free;
   end;
+  Edit1.Font.Color := StrToInt(
+    GetStdIni('Settings', 'OnlineTextColor', IntToStr(ClBlack)));
+  Edit1.Color := StrToInt(GetStdIni('Settings', 'OnlineTextBackGround',
+    IntToStr(ClDefault)));
+
 end;
 
 procedure TFPref.FormCreate(Sender: TObject);

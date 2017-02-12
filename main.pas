@@ -9,6 +9,10 @@
 //      Changed so filter is discarded on RegEx error
 // 20170209
 //      Corrected anchors for filter panel/group box
+// 20170211
+// Colrorizing online items
+// added option for scanning all intefaces
+//
 
 unit Main;
 
@@ -22,7 +26,7 @@ uses
   BufDataset, DB,
   netdb, laz2_DOM
   , laz2_XMLRead
-  , laz2_XMLUtils;
+  , laz2_XMLUtils, Grids;
 
 type
 
@@ -109,6 +113,8 @@ type
     procedure DataSource1DataChange(Sender: TObject; Field: TField);
     procedure DBGrid1ColumnSized(Sender: TObject);
     procedure DBGrid1DblClick(Sender: TObject);
+    procedure DBGrid1PrepareCanvas(Sender: TObject; DataCol: integer;
+      Column: TColumn; AState: TGridDrawState);
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -122,7 +128,10 @@ type
     procedure LoadDataBase(FlNm: string);
     procedure EmptyDatabase;
     procedure ShowMyMessage(Message: string);
+    procedure DoScan(InterF: string);
+    function InterfaceIsUp(Interf: string): boolean;
   public
+    OnlineFontColor, OnlineColor: TColor;
     { public declarations }
   end;
 
@@ -137,20 +146,31 @@ uses
 
 var
   DataBaseChanged: boolean;
-{ TMainForm }
+  GlMAC: TStringList;
 
-procedure TMainForm.ScanExecute(Sender: TObject);
+{ TMainForm }
+function TMainForm.InterfaceIsUp(Interf: string): boolean;
+var
+  fL: TextFile;
+  FlNm, St: string;
+begin
+  FlNm := StringReplace('/sys/class/net/<Interface>/operstate', '<Interface>',Interf, []);
+  AssignFile(fl, Flnm);
+  Reset(fl);
+  Read(fl, St);
+  CloseFile(fl);
+  if St = 'up' then
+    Result := True
+  else
+    Result := False;
+end;
+
+procedure TMainForm.DoScan(InterF: string);
 var
   Str: TStringList;
-
-  Cmd, Interf, St: string;
+  Cmd, St: string;
   i: integer;
-  SavedCursor: TCursor;
 begin
-  SavedCursor := Cursor;
-  Cursor := crHourGlass;
-  Panel6.Caption := 'Scanning';
-  Interf := GetStdIni('Settings', 'IFcmd', 'eth0');
   Cmd := GetStdIni('Commands', 'ScanCmd',
     'arp-scan -I <Interface> -l -q | tail  -n +3 | head -n -3');
 
@@ -162,11 +182,8 @@ begin
   //  DoCommand('/bin/bash -c "sudo ls -l"',Str);
   if DoCommand('/bin/bash -c "' + Cmd + '"', Str) = 0 then
   begin
-    Memo1.Lines.Clear;
-    Memo1.Lines.Add('New:');
     with BufDataSet1 do
     begin
-
       if not BufDataSet1.Active then
         CreateDataSet;
       if Str.Count < 4 then
@@ -175,27 +192,32 @@ begin
       begin
         for i := 0 to Str.Count - 1 do
         begin
-          St := UniformMac(GetFieldByDelimiter(1, Str[i], #9), ':');
-          if not BufDataset1.Locate('Mac', St, []) then
-          begin
-            Append;
-            FieldByName('Mac').AsString :=
-              UniformMac(GetFieldByDelimiter(1, Str[i], #9), ':');
-            FieldByName('Hostname').AsString := '';
-            FieldByName('OS').AsString := '';
-            FieldByName('Groups').AsString := '';
-            FieldByName('SSH').AsBoolean := False;
-            FieldByName('HTTP').AsBoolean := False;
-            FieldByName('HTTPS').AsBoolean := False;
-            FieldByName('FTP').AsBoolean := False;
-            FieldByName('SNMP').AsBoolean := False;
-            FieldByName('Nagios').AsBoolean := False;
-            Memo1.Lines.Add(St);
-          end
-          else
-            Edit;
-          FieldByName('IP').AsString := GetFieldByDelimiter(0, Str[i], #9);
-          post;
+          try
+            St := UniformMac(GetFieldByDelimiter(1, Str[i], #9), ':');
+            GlMAC.Add(St);
+            if not BufDataset1.Locate('Mac', St, []) then
+            begin
+              Append;
+              FieldByName('Mac').AsString :=
+                UniformMac(GetFieldByDelimiter(1, Str[i], #9), ':');
+              FieldByName('Hostname').AsString := '';
+              FieldByName('OS').AsString := '';
+              FieldByName('Groups').AsString := '';
+              FieldByName('SSH').AsBoolean := False;
+              FieldByName('HTTP').AsBoolean := False;
+              FieldByName('HTTPS').AsBoolean := False;
+              FieldByName('FTP').AsBoolean := False;
+              FieldByName('SNMP').AsBoolean := False;
+              FieldByName('Nagios').AsBoolean := False;
+              Memo1.Lines.Add(St);
+            end
+            else
+              Edit;
+            FieldByName('IP').AsString := GetFieldByDelimiter(0, Str[i], #9);
+            post;
+          except
+            Memo1.Lines.Add('Error in line: ' + Str[i]);
+          end;
           Application.ProcessMessages;
         end;
       end;
@@ -204,10 +226,43 @@ begin
   end
   else
   begin
-    Memo1.Clear;
     Memo1.Lines.Add('Error in executing command ' + cmd);
   end;
   Str.Free;
+
+end;
+
+procedure TMainForm.ScanExecute(Sender: TObject);
+var
+  SavedCursor: TCursor;
+  Interf, IfCmd: string;
+  InterList: TStringList;
+  i: integer;
+begin
+  GlMac.Clear;
+  Memo1.Lines.Clear;
+  Memo1.Lines.Add('New:');
+  InterList := TStringList.Create;
+  SavedCursor := Cursor;
+  Cursor := crHourGlass;
+  Panel6.Caption := 'Scanning';
+  Memo1.Clear;
+  Interf := GetStdIni('Settings', 'IFcmd', 'eth0');
+  if Interf = 'All' then
+  begin
+    IfCmd := GetStdIni('Commands', 'GetIfCmd',
+      'ifconfig -a | grep Link | grep -v inet6| awk '' { print $1 }  ''');
+    IFcmd := '/bin/bash -c "' + IfCmd + '"';
+    DoCommand(IFcmd, InterList);
+  end
+  else
+    InterList.Add(Interf);
+  for i := 0 to InterList.Count - 1 do
+    if InterfaceIsUp(InterList[i]) then
+      DoSCan(InterList[i])
+    Else
+      Memo1.Lines.Add('Interface '+InterList[i]+' is not active');
+  InterList.Free;
   Panel6.Caption := '';
   Cursor := SavedCursor;
 end;
@@ -227,6 +282,7 @@ end;
 procedure TMainForm.APreferencesExecute(Sender: TObject);
 begin
   FPref.ShowModal;
+  Panel5.Caption := 'Interface: ' + GetStdIni('Settings', 'IFcmd', 'eth0');
 end;
 
 procedure TMainForm.AVersionsExecute(Sender: TObject);
@@ -287,7 +343,7 @@ begin
         Accept := False;
     except
       ShowMessage('Error in Regular Expression, filter discarded ');
-      BufDataSet1.Filtered:=false;
+      BufDataSet1.Filtered := False;
     end;
   finally
     RegEx.Free;
@@ -492,6 +548,18 @@ begin
   EditForm.SHowModal;
 end;
 
+procedure TMainForm.DBGrid1PrepareCanvas(Sender: TObject; DataCol: integer;
+  Column: TColumn; AState: TGridDrawState);
+begin
+  if (GlMac.IndexOf(BufDataSet1.FieldByName('Mac').AsString) >= 0) then
+    with (Sender as TDBGrid) do
+    begin
+      Canvas.Font.Color := OnlineFontColor;
+      Canvas.Font.STyle := [fsBold];
+      Canvas.Brush.Color := OnlineColor;
+    end;
+end;
+
 procedure TMainForm.FormCloseQuery(Sender: TObject; var CanClose: boolean);
 begin
   if DataBaseChanged then
@@ -550,12 +618,18 @@ begin
   for i := 0 to BufDataSet1.FieldCount - 1 do
     CB1.Items.Add(BufDataSet1.Fields[i].FieldName);
   CB1.ItemIndex := 0;
-  ;
+  GlMac := TStringList.Create;
+  OnlineFontColor := StrToInt(GetStdIni('Settings', 'OnlineTextColor',
+    IntToStr(ClBlack)));
+  OnlineCOlor := StrToInt(GetStdIni('Settings', 'OnlineTextBackGround',
+    IntToStr(ClDefault)));
+
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
   SaveForm(MainForm);
+  GlMac.Free;
 end;
 
 procedure TMainForm.MenuItem10Click(Sender: TObject);

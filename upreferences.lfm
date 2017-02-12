@@ -108,4 +108,79 @@ object FPref: TFPref
     ParentBidiMode = False
     TabOrder = 6
   end
+  object Label5: TLabel
+    Left = 40
+    Height = 17
+    Top = 201
+    Width = 195
+    Caption = 'Background colour for online items'
+    ParentColor = False
+  end
+  object Edit1: TEdit
+    Left = 352
+    Height = 27
+    Top = 208
+    Width = 80
+    TabOrder = 7
+    Text = 'Online item'
+  end
+  object Button3: TButton
+    Left = 256
+    Height = 25
+    Top = 192
+    Width = 75
+    Caption = 'Select'
+    OnClick = Button3Click
+    TabOrder = 8
+  end
+  object Label6: TLabel
+    Left = 40
+    Height = 17
+    Top = 232
+    Width = 152
+    Caption = 'Text colour for online items'
+    ParentColor = False
+  end
+  object Button4: TButton
+    Left = 256
+    Height = 25
+    Top = 224
+    Width = 75
+    Caption = 'Select'
+    OnClick = Button4Click
+    TabOrder = 9
+  end
+  object ColorDialog1: TColorDialog
+    Color = clBlack
+    CustomColors.Strings = (
+      'ColorA=000000'
+      'ColorB=000080'
+      'ColorC=008000'
+      'ColorD=008080'
+      'ColorE=800000'
+      'ColorF=800080'
+      'ColorG=808000'
+      'ColorH=808080'
+      'ColorI=C0C0C0'
+      'ColorJ=0000FF'
+      'ColorK=00FF00'
+      'ColorL=00FFFF'
+      'ColorM=FF0000'
+      'ColorN=FF00FF'
+      'ColorO=FFFF00'
+      'ColorP=FFFFFF'
+      'ColorQ=C0DCC0'
+      'ColorR=F0CAA6'
+      'ColorS=F0FBFF'
+      'ColorT=A4A0A0'
+    )
+    left = 496
+    top = 184
+  end
+  object FontDialog1: TFontDialog
+    MinFontSize = 0
+    MaxFontSize = 0
+    left = 552
+    top = 192
+  end
 end
