@@ -20,13 +20,18 @@ uses {$IFDEF UNIX} {$IFDEF UseCThreads}
   ugroupedit,
   uwrite_port,
   uabout,
-  UMyShowMessage;
+  UMyShowMessage, usplash;
 
 {$R *.res}
 
 begin
   RequireDerivedFormResource := True;
   Application.Initialize;
+  Application.Title:= 'Inventory';
+   FSplash := TFsplash.create(application);
+   FSplash.show;
+   FSplash.Update;
+   application.ProcessMessages;
   Application.CreateForm(TMainForm, MainForm);
   Application.CreateForm(TFPref, FPref);
   Application.CreateForm(TEditForm, EditForm);
@@ -35,5 +40,8 @@ begin
   Application.CreateForm(TFWrite_Port, FWrite_Port);
   Application.CreateForm(TFAbout, FAbout);
   Application.CreateForm(TFMyShowMessage, FMyShowMessage);
+  FSplash.close;
+  FSplash.Release;
+
   Application.Run;
 end.

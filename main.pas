@@ -26,7 +26,7 @@ uses
   BufDataset, DB,
   netdb, laz2_DOM
   , laz2_XMLRead
-  , laz2_XMLUtils, Grids;
+  , laz2_XMLUtils, Grids, IniPropStorage;
 
 type
 
@@ -142,7 +142,7 @@ implementation
 
 {$R *.lfm}
 uses
-  UEdit, UAbout, UGroups, UGroupEdit, UWrite_Port, sockets, UMyShowMessage, RegExpr;
+  Unix,UEdit, UAbout, UGroups, UGroupEdit, UWrite_Port, sockets, UMyShowMessage, RegExpr;
 
 var
   DataBaseChanged: boolean;
@@ -238,6 +238,7 @@ var
   Interf, IfCmd: string;
   InterList: TStringList;
   i: integer;
+  Filtered: Boolean;
 begin
   GlMac.Clear;
   Memo1.Lines.Clear;
@@ -245,6 +246,9 @@ begin
   InterList := TStringList.Create;
   SavedCursor := Cursor;
   Cursor := crHourGlass;
+  Filtered := BufDataSet1.Filtered;
+  If Filtered Then
+    BufDataSet1.Filtered := False;
   Panel6.Caption := 'Scanning';
   Memo1.Clear;
   Interf := GetStdIni('Settings', 'IFcmd', 'eth0');
@@ -262,6 +266,7 @@ begin
       DoSCan(InterList[i])
     Else
       Memo1.Lines.Add('Interface '+InterList[i]+' is not active');
+  BufDataSet1.Filtered := Filtered;
   InterList.Free;
   Panel6.Caption := '';
   Cursor := SavedCursor;
@@ -284,6 +289,7 @@ begin
   FPref.ShowModal;
   Panel5.Caption := 'Interface: ' + GetStdIni('Settings', 'IFcmd', 'eth0');
 end;
+
 
 procedure TMainForm.AVersionsExecute(Sender: TObject);
 begin
